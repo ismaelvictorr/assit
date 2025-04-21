@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetAssist AI - Assistente Veterinário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .markdown-content h1 { font-size: 1.5rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .markdown-content h2 { font-size: 1.25rem; font-weight: bold; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+        .markdown-content p { margin-bottom: 1rem; line-height: 1.6; }
+        .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-content code { background-color: #f1f1f1; padding: 0.2rem 0.4rem; border-radius: 0.25rem; }
+        .markdown-content pre { background-color: #f1f1f1; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1rem; }
+        .markdown-content blockquote { border-left: 4px solid #e2e8f0; padding-left: 1rem; margin-left: 0; margin-bottom: 1rem; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        .logo-shadow {
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="gradient-bg text-white py-8">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <header class="text-center">
+                <div class="flex justify-center items-center mb-6">
+                    <svg class="w-32 h-32 logo-shadow" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Silhueta do cavalo -->
+                        <path d="M120 30C120 30 130 25 135 35C140 45 138 55 135 60C132 65 125 70 120 70" stroke="white" stroke-width="3"/>
+                        <!-- Silhueta do cachorro -->
+                        <path d="M90 40C90 40 85 35 80 40C75 45 75 50 78 55C81 60 85 62 90 60" stroke="white" stroke-width="3"/>
+                        <!-- Silhueta do gato -->
+                        <path d="M65 45C65 45 60 42 58 45C56 48 56 52 58 55C60 58 63 59 65 58" stroke="white" stroke-width="3"/>
+                        <!-- Silhueta da vaca -->
+                        <path d="M150 35C150 35 160 30 165 40C170 50 168 60 165 65C162 70 155 75 150 75" stroke="white" stroke-width="3"/>
+                        <!-- Linha base -->
+                        <line x1="40" y1="80" x2="160" y2="80" stroke="white" stroke-width="2"/>
+                        <!-- Texto -->
+                        <text x="50" y="95" fill="white" font-family="Inter" font-weight="bold" font-size="14">VetAssist Clinic</text>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-bold mb-2">VetAssist AI</h1>
+                <p class="text-xl opacity-90 mb-6">Seu Assistente de Estudos Veterinários Inteligente</p>
+                <div class="flex justify-center gap-4 mt-4">
+                    <button class="bg-white text-blue-900 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                        <i class="fas fa-book"></i>
+                        Biblioteca
+                    </button>
+                    <button class="bg-white text-blue-900 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                        <i class="fas fa-calendar"></i>
+                        Agenda
+                    </button>
+                    <button class="bg-white text-blue-900 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2">
+                        <i class="fas fa-user-md"></i>
+                        Consultas
+                    </button>
+                </div>
+            </header>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 max-w-5xl py-8">
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6">
+                        <select id="category" class="flex-1 p-3 rounded-lg border border-gray-300 focus:border-blue-900 focus:ring-2 focus:ring-blue-100 transition-colors">
+                            <option value="geral">Categoria Geral</option>
+                            <option value="anatomia">Anatomia</option>
+                            <option value="patologia">Patologia</option>
+                            <option value="clinica">Clínica</option>
+                            <option value="cirurgia">Cirurgia</option>
+                            <option value="farmacologia">Farmacologia</option>
+                            <option value="emergencia">Emergência</option>
+                            <option value="diagnostico">Diagnóstico</option>
+                            <option value="nutricao">Nutrição</option>
+                        </select>
+                        <button class="p-3 text-gray-500 hover:text-blue-900 transition-colors" title="Filtros Avançados">
+                            <i class="fas fa-sliders-h"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex gap-3 mb-4">
+                        <textarea 
+                            id="question" 
+                            rows="4" 
+                            class="flex-1 p-3 rounded-lg border border-gray-300 focus:border-blue-900 focus:ring-2 focus:ring-blue-100 transition-colors resize-none"
+                            placeholder="Digite sua pergunta sobre veterinária..."
+                        ></textarea>
+                        <div class="flex flex-col gap-2">
+                            <button 
+                                id="send-button"
+                                class="px-6 py-3 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors focus:ring-2 focus:ring-blue-200 disabled:opacity-50 shadow-sm flex items-center gap-2"
+                            >
+                                <i class="fas fa-paper-plane"></i>
+                                Enviar
+                            </button>
+                            <button class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors focus:ring-2 focus:ring-gray-200 flex items-center gap-2">
+                                <i class="fas fa-microphone"></i>
+                                Falar
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mb-6">
+                        <button class="px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-sm hover:bg-blue-100 transition-colors">
+                            #anatomia
+                        </button>
+                        <button class="px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-sm hover:bg-blue-100 transition-colors">
+                            #diagnóstico
+                        </button>
+                        <button class="px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-sm hover:bg-blue-100 transition-colors">
+                            #tratamento
+                        </button>
+                    </div>
+
+                    <div id="loading" class="hidden">
+                        <div class="flex items-center justify-center py-4">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-900 border-t-transparent"></div>
+                        </div>
+                    </div>
+
+                    <div id="response-container" class="mt-6 markdown-content">
+                        <!-- As respostas serão inseridas aqui -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 sticky top-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Histórico</h2>
+                        <button class="text-gray-500 hover:text-blue-900 transition-colors">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <button class="w-full px-4 py-2 text-left rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                            <i class="fas fa-clock text-gray-400"></i>
+                            Recentes
+                        </button>
+                        <button class="w-full px-4 py-2 text-left rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                            <i class="fas fa-bookmark text-gray-400"></i>
+                            Salvos
+                        </button>
+                        <button class="w-full px-4 py-2 text-left rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+                            <i class="fas fa-star text-gray-400"></i>
+                            Favoritos
+                        </button>
+                    </div>
+                    <div id="history-list" class="space-y-4">
+                        <!-- O histórico será inserido aqui -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Configuração inicial
+        const OPENAI_API_KEY = "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";
+        
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        // Elementos DOM
+        const questionInput = document.getElementById('question');
+        const sendButton = document.getElementById('send-button');
+        const responseContainer = document.getElementById('response-container');
+        const loadingIndicator = document.getElementById('loading');
+        const historyList = document.getElementById('history-list');
+
+        // Função para mostrar mensagens de erro de forma amigável
+        function showError(message) {
+            responseContainer.innerHTML = `
+                <div class="bg-red-50 text-red-600 p-4 rounded-lg">
+                    <p class="font-bold">Erro:</p>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        // Banco de dados local
+        class VetAssistDB {
+            constructor() {
+                this.dbKey = 'vetassist_data';
+                this.savedData = JSON.parse(localStorage.getItem(this.dbKey)) || [];
+            }
+            
+            saveItem(question, answer, category) {
+                this.savedData.unshift({
+                    id: Date.now().toString(),
+                    question,
+                    answer,
+                    category,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem(this.dbKey, JSON.stringify(this.savedData));
+                this.updateHistoryDisplay();
+            }
+            
+            getItems() {
+                return this.savedData;
+            }
+            
+            clearAll() {
+                this.savedData = [];
+                localStorage.removeItem(this.dbKey);
+                this.updateHistoryDisplay();
+            }
+
+            updateHistoryDisplay() {
+                historyList.innerHTML = this.savedData
+                    .slice(0, 5)
+                    .map(item => `
+                        <div class="border-b border-gray-200 py-4 last:border-0">
+                            <div class="font-medium text-blue-600 mb-2">${item.question}</div>
+                            <div class="text-sm text-gray-600">${new Date(item.date).toLocaleDateString()}</div>
+                        </div>
+                    `)
+                    .join('');
+            }
+        }
+
+        const db = new VetAssistDB();
+        db.updateHistoryDisplay();
+
+        // Função principal para enviar perguntas
+        async function sendQuestion() {
+            const question = questionInput.value.trim();
+            if (!question) {
+                showError('Por favor, digite uma pergunta.');
+                return;
+            }
+
+            loadingIndicator.classList.remove('hidden');
+            responseContainer.innerHTML = '';
+            sendButton.disabled = true;
+            questionInput.disabled = true;
+
+            try {
+                console.log('Enviando requisição para a API...');
+                const response = await fetch('http://localhost:3000/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        question: question
+                    })
+                });
+
+                console.log('Status da resposta:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    console.error('Erro completo:', errorData);
+                    throw new Error(errorData.error || 'Erro ao comunicar com o servidor');
+                }
+
+                const data = await response.json();
+                console.log('Resposta recebida com sucesso:', data);
+                
+                if (!data.content || !data.content[0] || !data.content[0].text) {
+                    throw new Error('Resposta da API não contém o formato esperado');
+                }
+
+                const answer = data.content[0].text;
+                responseContainer.innerHTML = marked.parse(answer);
+                
+                const category = document.getElementById('category').value;
+                db.saveItem(question, answer, category);
+                
+                questionInput.value = '';
+
+            } catch (error) {
+                console.error('Erro detalhado:', error);
+                showError(`${error.message}\n\nPor favor, verifique se:\n1. A chave da API está correta\n2. Você tem permissão para usar a API\n3. Sua conexão com a internet está funcionando`);
+            } finally {
+                loadingIndicator.classList.add('hidden');
+                sendButton.disabled = false;
+                questionInput.disabled = false;
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Página carregada, inicializando...');
+            sendButton.addEventListener('click', sendQuestion);
+            questionInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuestion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
